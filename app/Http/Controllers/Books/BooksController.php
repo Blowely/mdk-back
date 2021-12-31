@@ -15,6 +15,11 @@ class BooksController
         $products = DB::table('products')->get();
 
         if ($products) {
+            $count = count($products);
+            for ($i = 0; $i < $count; $i++){
+                $products[$i]->images = base64_encode($products[$i]->images);
+            }
+
             return response()->json([
                 'products' => $products
             ]);
@@ -66,6 +71,11 @@ class BooksController
             ->get();
 
         if ($transactions) {
+            $count = count($transactions);
+            for ($i = 0; $i < $count; $i++){
+                $transactions[$i]->images = base64_encode($transactions[$i]->images);
+            }
+
             return response()->json([
                 'transactions' => $transactions
             ]);
@@ -83,6 +93,11 @@ class BooksController
         $products = DB::table('products')->where('id', $slug)->get();
 
         if ($products) {
+            $count = count($products);
+            for ($i = 0; $i < $count; $i++){
+                $products[$i]->images = base64_encode($products[$i]->images);
+            }
+
             return response()->json([
                 'product' => $products
             ]);
