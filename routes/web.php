@@ -15,6 +15,7 @@ Route::get('/', function(){
 Route::post('/register', [UsersController::class, 'reg'])->name('reg');
 Route::post('/login', [UsersController::class, 'auth'])->name('login');
 Route::post('/test', [UsersController::class, 'test'])->name('test');
+Route::post('/add', [BooksController::class, 'addProduct'])->name('addProduct');
 Route::get('/products', [BooksController::class, 'getProducts'])->name('getProducts');
 Route::get('/customers', [BooksController::class, 'getCustomers'])->name('getCustomers');
 Route::get('/users', [BooksController::class, 'getUsers'])->name('getUsers');

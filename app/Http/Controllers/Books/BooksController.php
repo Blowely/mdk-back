@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use mysql_xdevapi\Table;
 
 class BooksController
@@ -108,6 +109,56 @@ class BooksController
                 ]
             ]);
         }
+    }
+
+    public function addProduct(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'category' => 'required',
+            'name' => 'required|max:500|unique:products',
+            'description' => 'required|unique:products|max:500',
+            'file' => 'required',
+            'cost' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => [
+                    'errors' => $validator->errors(),
+                ]
+            ], 422);
+        }
+
+
+
+        $insert = DB::table('products')
+            ->insert([
+                'category' => $data['category'],
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'images' => $data['file'],
+                'cost' => $data['cost'],
+            ]);
+
+        if ($insert) {
+            return response()->json([
+                'data' => [
+                    'data' => $data,
+                ]
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => [
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'login' => ['login or password incorrect']
+                ]
+            ]
+        ],401);
     }
 
     public function getTourInExactDate(Request $request)
