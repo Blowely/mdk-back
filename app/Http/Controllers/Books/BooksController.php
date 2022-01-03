@@ -33,6 +33,27 @@ class BooksController
         }
     }
 
+    public function getProductsCategory($slug){
+        $products = DB::table('products')->where('category', $slug)->get();
+
+        if ($products) {
+            $count = count($products);
+            for ($i = 0; $i < $count; $i++){
+                $products[$i]->images = base64_encode($products[$i]->images);
+            }
+
+            return response()->json([
+                'products' => $products
+            ]);
+        } else {
+            return response()->json([
+                'data' => [
+                    'products' => []
+                ]
+            ]);
+        }
+    }
+
     public function getCustomers(Request $req){
         $customers = DB::table('customers')->get();
 
@@ -72,11 +93,6 @@ class BooksController
             ->get();
 
         if ($transactions) {
-            $count = count($transactions);
-            for ($i = 0; $i < $count; $i++){
-                $transactions[$i]->images = base64_encode($transactions[$i]->images);
-            }
-
             return response()->json([
                 'transactions' => $transactions
             ]);
@@ -140,6 +156,142 @@ class BooksController
                 'description' => $data['description'],
                 'images' => $data['file'],
                 'cost' => $data['cost'],
+            ]);
+
+        if ($insert) {
+            return response()->json([
+                'data' => [
+                    'data' => $data,
+                ]
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => [
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'login' => ['login or password incorrect']
+                ]
+            ]
+        ],401);
+    }
+
+    public function addTransaction(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'id_customer' => 'required',
+            'id_product' => 'required',
+            'date' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => [
+                    'errors' => $validator->errors(),
+                ]
+            ], 422);
+        }
+
+
+
+        $insert = DB::table('transactions')
+            ->insert([
+                'id_customer' => $data['id_customer'],
+                'id_product' => $data['id_product'],
+                'date' => $data['date'],
+            ]);
+
+        if ($insert) {
+            return response()->json([
+                'data' => [
+                    'data' => $data,
+                ]
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => [
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'login' => ['login or password incorrect']
+                ]
+            ]
+        ],401);
+    }
+
+    public function addCustomer(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'fio' => 'required|max:300',
+            'email' => 'required|email|unique:customers',
+            'phone' => 'required|min:7|max:10',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => [
+                    'errors' => $validator->errors(),
+                ]
+            ], 422);
+        }
+
+        $insert = DB::table('customers')
+            ->insert([
+                'fio' => $data['fio'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+            ]);
+
+        if ($insert) {
+            return response()->json([
+                'data' => [
+                    'data' => $data,
+                ]
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => [
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'login' => ['login or password incorrect']
+                ]
+            ]
+        ],401);
+    }
+
+    public function addUser(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'id_customer' => 'required',
+            'id_product' => 'required',
+            'date' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => [
+                    'errors' => $validator->errors(),
+                ]
+            ], 422);
+        }
+
+
+
+        $insert = DB::table('users')
+            ->insert([
+                'id_customer' => $data['id_customer'],
+                'id_product' => $data['id_product'],
+                'date' => $data['date'],
             ]);
 
         if ($insert) {
