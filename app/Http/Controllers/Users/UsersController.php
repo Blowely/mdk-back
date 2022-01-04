@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 class UsersController
 {
+    public static $authorizedUser = '';
     public function reg(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->all();
@@ -59,6 +60,7 @@ class UsersController
         $foundRes = DB::table('users')->where('login', $data['login'])->first();
         if ($foundRes) {
             if (md5($data['password']) == $foundRes->password) {
+                UsersController::$authorizedUser = $foundRes->login;
                 return response()->json([
                     'data' => [
                         'who' => $foundRes->login,

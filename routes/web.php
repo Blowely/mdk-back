@@ -15,12 +15,15 @@ Route::get('/', function(){
 Route::post('/register', [UsersController::class, 'reg'])->name('reg');
 Route::post('/login', [UsersController::class, 'auth'])->name('login');
 Route::post('/test', [UsersController::class, 'test'])->name('test');
+
 Route::post('/add', [BooksController::class, 'addProduct'])->name('addProduct');
 Route::post('/add-transaction', [BooksController::class, 'addTransaction'])->name('addTransaction');
 Route::post('/add-customer', [BooksController::class, 'addCustomer'])->name('addCustomer');
 Route::post('/add-user', [BooksController::class, 'addUser'])->name('addUser');
+Route::post('/add-category', [BooksController::class, 'addCategory'])->name('addCategory');
 Route::get('/products', [BooksController::class, 'getProducts'])->name('getProducts');
 Route::get('/products/{slug}', [BooksController::class, 'getProductsCategory'])->name('getProductsCategory');
+Route::get('/categories', [BooksController::class, 'getCategories'])->name('getCategories');
 Route::get('/customers', [BooksController::class, 'getCustomers'])->name('getCustomers');
 Route::get('/users', [BooksController::class, 'getUsers'])->name('getUsers');
 Route::get('/transactions', [BooksController::class, 'getTransactions'])->name('getTransactions');

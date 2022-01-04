@@ -13,7 +13,7 @@ use mysql_xdevapi\Table;
 class BooksController
 {
     public function getProducts(Request $req){
-        $products = DB::table('products')->get();
+        $products = DB::table('products')->orderByDesc('id')->get();
 
         if ($products) {
             $count = count($products);
@@ -37,11 +37,6 @@ class BooksController
         $products = DB::table('products')->where('category', $slug)->get();
 
         if ($products) {
-            $count = count($products);
-            for ($i = 0; $i < $count; $i++){
-                $products[$i]->images = base64_encode($products[$i]->images);
-            }
-
             return response()->json([
                 'products' => $products
             ]);
@@ -49,6 +44,22 @@ class BooksController
             return response()->json([
                 'data' => [
                     'products' => []
+                ]
+            ]);
+        }
+    }
+
+    public function getCategories(){
+        $categories = DB::table('categories')->get();
+
+        if ($categories) {
+            return response()->json([
+                'categories' => $categories
+            ]);
+        } else {
+            return response()->json([
+                'data' => [
+                    'categories' => []
                 ]
             ]);
         }
@@ -272,9 +283,8 @@ class BooksController
         $data = $request->all();
 
         $validator = Validator::make($data, [
-            'id_customer' => 'required',
-            'id_product' => 'required',
-            'date' => 'required',
+            'login' => 'required|max:50|unique:users',
+            'password' => 'required|max:100',
         ]);
 
         if($validator->fails()){
@@ -289,9 +299,50 @@ class BooksController
 
         $insert = DB::table('users')
             ->insert([
-                'id_customer' => $data['id_customer'],
-                'id_product' => $data['id_product'],
-                'date' => $data['date'],
+                'login' => $data['login'],
+                'password' => md5($data['password'])
+            ]);
+
+        if ($insert) {
+            return response()->json([
+                'data' => [
+                    'data' => $data,
+                ]
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => [
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'login' => ['login or password incorrect']
+                ]
+            ]
+        ],401);
+    }
+
+    public function addCategory(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'name' => 'required|max:50|min:2|unique:categories',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => [
+                    'errors' => $validator->errors(),
+                ]
+            ], 422);
+        }
+
+
+
+        $insert = DB::table('categories')
+            ->insert([
+                'name' => $data['name'],
             ]);
 
         if ($insert) {
