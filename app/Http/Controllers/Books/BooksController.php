@@ -16,11 +16,6 @@ class BooksController
         $products = DB::table('products')->orderByDesc('id')->get();
 
         if ($products) {
-            $count = count($products);
-            for ($i = 0; $i < $count; $i++){
-                $products[$i]->images = base64_encode($products[$i]->images);
-            }
-
             return response()->json([
                 'products' => $products
             ]);
@@ -116,16 +111,11 @@ class BooksController
         }
     }
 
-    public function getBook($slug)
+    public function getProduct($slug)
     {
         $products = DB::table('products')->where('id', $slug)->get();
 
         if ($products) {
-            $count = count($products);
-            for ($i = 0; $i < $count; $i++){
-                $products[$i]->images = base64_encode($products[$i]->images);
-            }
-
             return response()->json([
                 'product' => $products
             ]);
@@ -362,6 +352,48 @@ class BooksController
                 ]
             ]
         ],401);
+    }
+
+    public function updateProduct(Request $request)
+    {
+        $data = $request->all();
+
+        $products = DB::table('products')->where('id', $data['id'])->update([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'cost' => $data['cost']
+        ]);
+
+        if ($products) {
+            return response()->json([
+                'product' => $products
+            ]);
+        } else {
+            return response()->json([
+                'data' => [
+                    'products' => []
+                ]
+            ]);
+        }
+    }
+
+    public function removeProduct(Request $request)
+    {
+        $data = $request->all();
+
+        $products = DB::table('products')->delete(['id' => $data['id']]);
+
+        if ($products) {
+            return response()->json([
+                'product' => $products
+            ]);
+        } else {
+            return response()->json([
+                'data' => [
+                    'products' => []
+                ]
+            ]);
+        }
     }
 
     public function getTourInExactDate(Request $request)

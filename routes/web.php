@@ -21,13 +21,17 @@ Route::post('/add-transaction', [BooksController::class, 'addTransaction'])->nam
 Route::post('/add-customer', [BooksController::class, 'addCustomer'])->name('addCustomer');
 Route::post('/add-user', [BooksController::class, 'addUser'])->name('addUser');
 Route::post('/add-category', [BooksController::class, 'addCategory'])->name('addCategory');
+Route::post('/update', [BooksController::class, 'updateProduct'])->name('updateProduct');
+Route::post('/remove', [BooksController::class, 'removeProduct'])->name('removeProduct');
+
 Route::get('/products', [BooksController::class, 'getProducts'])->name('getProducts');
-Route::get('/products/{slug}', [BooksController::class, 'getProductsCategory'])->name('getProductsCategory');
+Route::get('/categories/{slug}', [BooksController::class, 'getProductsCategory'])->name('getProductsCategory');
 Route::get('/categories', [BooksController::class, 'getCategories'])->name('getCategories');
 Route::get('/customers', [BooksController::class, 'getCustomers'])->name('getCustomers');
 Route::get('/users', [BooksController::class, 'getUsers'])->name('getUsers');
 Route::get('/transactions', [BooksController::class, 'getTransactions'])->name('getTransactions');
-Route::get('/books/{slug}', [BooksController::class, 'getBook'])->name('getBook');
+Route::get('/products/{slug}', [BooksController::class, 'getProduct'])->name('getProduct');
+
 Route::get('/tours_date  ', [BooksController::class, 'getTourInExactDate'])->name('getTour');
 //Route::get('/tours_date/{date_min}/{date_max}/{passengers}', [ToursControllers::class, 'getTourInExactDate'])->name('getTourInExactDate');
 
